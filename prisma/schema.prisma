@@ -1,13 +1,239 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+}
+
+enum DressUnitStatus {
+  AVAILABLE
+  RESERVED
+  RENTED
+  MAINTENANCE
+  LAUNDRY
+  RETIRED
+}
+
+enum RentalStatus {
+  RESERVED
+  RENTED
+  RETURNED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentTarget {
+  RENTAL
+  SALE
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  TRANSFER
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum SaleStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum BlockReason {
+  MAINTENANCE
+  LAUNDRY
+  REPAIR
+  OTHER
+}
+
+model AdminUser {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  fullName       String
+  role           UserRole @default(ADMIN)
+  isActive       Boolean  @default(true)
+  rentalsCreated Rental[] @relation("RentalCreatedBy")
+  salesCreated   Sale[]   @relation("SaleCreatedBy")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+model Customer {
+  id         String   @id @default(cuid())
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  documentId String?
+  notes      String?
+  rentals    Rental[]
+  sales      Sale[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([email])
+  @@index([phone])
+  @@index([lastName, firstName])
+  @@map("customers")
+}
+
+model Dress {
+  id               String      @id @default(cuid())
+  modelName        String
+  brand            String?
+  color            String
+  size             String
+  description      String?
+  rentalPriceCents Int
+  salePriceCents   Int?
+  isActive         Boolean     @default(true)
+  units            DressUnit[]
+  sales            Sale[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([modelName])
+  @@index([size])
+  @@index([color])
+  @@map("dresses")
+}
+
+model DressUnit {
+  id                String             @id @default(cuid())
+  dressId           String
+  inventoryCode     String             @unique
+  status            DressUnitStatus    @default(AVAILABLE)
+  conditionNotes    String?
+  purchaseDate      DateTime?
+  isActive          Boolean            @default(true)
+  dress             Dress              @relation(fields: [dressId], references: [id], onDelete: Restrict)
+  rentalItems       RentalItem[]
+  maintenanceBlocks MaintenanceBlock[]
+  sales             Sale[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([dressId])
+  @@index([status])
+  @@map("dress_units")
+}
+
+model Rental {
+  id                   String       @id @default(cuid())
+  customerId           String
+  createdById          String?
+  status               RentalStatus @default(RESERVED)
+  startDate            DateTime
+  endDate              DateTime
+  subtotalCents        Int
+  depositRequiredCents Int
+  balanceDueCents      Int
+  totalPaidCents       Int          @default(0)
+  notes                String?
+  customer             Customer     @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  createdBy            AdminUser?   @relation("RentalCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  items                RentalItem[]
+  payments             Payment[]
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@index([customerId])
+  @@index([status, startDate, endDate])
+  @@map("rentals")
+}
+
+model RentalItem {
+  id          String    @id @default(cuid())
+  rentalId    String
+  dressUnitId String
+  startsAt    DateTime
+  endsAt      DateTime
+  priceCents  Int
+  rental      Rental    @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  dressUnit   DressUnit @relation(fields: [dressUnitId], references: [id], onDelete: Restrict)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([rentalId])
+  @@index([dressUnitId, startsAt, endsAt])
+  @@map("rental_items")
+}
+
+model Sale {
+  id          String     @id @default(cuid())
+  customerId  String?
+  createdById String?
+  dressId     String
+  dressUnitId String?
+  status      SaleStatus @default(COMPLETED)
+  saleDate    DateTime   @default(now())
+  totalCents  Int
+  notes       String?
+  customer    Customer?  @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  createdBy   AdminUser? @relation("SaleCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  dress       Dress      @relation(fields: [dressId], references: [id], onDelete: Restrict)
+  dressUnit   DressUnit? @relation(fields: [dressUnitId], references: [id], onDelete: SetNull)
+  payments    Payment[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([saleDate, status])
+  @@index([customerId])
+  @@index([dressId])
+  @@map("sales")
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  target      PaymentTarget
+  rentalId    String?
+  saleId      String?
+  method      PaymentMethod
+  status      PaymentStatus @default(PAID)
+  amountCents Int
+  paidAt      DateTime?
+  reference   String?
+  notes       String?
+  rental      Rental?       @relation(fields: [rentalId], references: [id], onDelete: SetNull)
+  sale        Sale?         @relation(fields: [saleId], references: [id], onDelete: SetNull)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([target, paidAt])
+  @@index([rentalId])
+  @@index([saleId])
+  @@map("payments")
+}
+
+model MaintenanceBlock {
+  id          String      @id @default(cuid())
+  dressUnitId String
+  startAt     DateTime
+  endAt       DateTime
+  reason      BlockReason
+  notes       String?
+  dressUnit   DressUnit   @relation(fields: [dressUnitId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([dressUnitId, startAt, endAt])
+  @@index([reason])
+  @@map("maintenance_blocks")
 }
