@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 type PaymentMethod = "CASH" | "CARD" | "TRANSFER" | "OTHER";
 type RentalStatus = "RESERVED" | "RENTED" | "RETURNED" | "COMPLETED" | "CANCELLED";
+type RentalItemRef = { dressUnitId: string };
 
 function withDepositTag(notes: string | null, depositPaid: boolean) {
   const cleanNotes = (notes ?? "")
@@ -43,7 +44,7 @@ export async function updateRentalStatusAction(
     });
 
     await Promise.all(
-      items.map((item) =>
+      items.map((item: RentalItemRef) =>
         prisma.dressUnit.update({
           where: { id: item.dressUnitId },
           data: { status: "RENTED" },
@@ -60,7 +61,7 @@ export async function updateRentalStatusAction(
     });
 
     await Promise.all(
-      items.map((item) =>
+      items.map((item: RentalItemRef) =>
         prisma.dressUnit.update({
           where: { id: item.dressUnitId },
           data: { status: "AVAILABLE" },
@@ -140,7 +141,7 @@ export async function cancelRentalAction(rentalId: string) {
 
   // Return all units to AVAILABLE
   await Promise.all(
-    rental.items.map((item) =>
+    rental.items.map((item: RentalItemRef) =>
       prisma.dressUnit.update({
         where: { id: item.dressUnitId },
         data: { status: "AVAILABLE" },
