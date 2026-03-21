@@ -189,7 +189,7 @@ export default async function CalendarioPage({ searchParams }: CalendarPageProps
                 <p className="text-sm font-semibold text-[#6e5e47]">{date.getDate()}</p>
 
                 <div className="mt-2 space-y-1">
-                  {dayRentals.slice(0, 3).map((rental) => {
+                  {dayRentals.slice(0, 3).map((rental: CalendarRental) => {
                     const tag = toStatusTag(rental.status);
                     return (
                       <Link

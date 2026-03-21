@@ -3,6 +3,14 @@ import Link from "next/link";
 import { Badge } from "@/components/badge";
 import { updateSaleStatusAction } from "./actions";
 
+type SalePayment = {
+  id: string;
+  method: string;
+  status: string;
+  amountCents: number;
+  paidAt: Date | null;
+};
+
 const SALE_STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-[#f7edcc] text-[#9d7413]",
   COMPLETED: "bg-[#dcefe5] text-[#2c8d5c]",
@@ -168,7 +176,7 @@ export default async function SaleDetailPage({
           <div className="flex justify-between">
             <span className="text-gray-700">Pagado:</span>
             <span className="font-semibold text-green-700">
-              {formatPrice(sale.payments.reduce((sum, payment) => sum + payment.amountCents, 0))}
+              {formatPrice(sale.payments.reduce((sum: number, payment: SalePayment) => sum + payment.amountCents, 0))}
             </span>
           </div>
         </div>
@@ -180,7 +188,7 @@ export default async function SaleDetailPage({
           <p className="text-sm text-[#8f7f65]">No hay pagos registrados.</p>
         ) : (
           <div className="space-y-2">
-            {sale.payments.map((payment) => (
+            {sale.payments.map((payment: SalePayment) => (
               <article key={payment.id} className="flex items-center justify-between rounded-lg border border-[#eadfce] p-3">
                 <div>
                   <p className="font-medium text-gray-900">{PAYMENT_METHOD_LABELS[payment.method] ?? payment.method}</p>

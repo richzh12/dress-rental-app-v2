@@ -89,7 +89,7 @@ export default function CreateRentalForm({ customers }: CreateRentalFormProps) {
     const days = calculateRentalDays();
     if (days === 0) return 0;
 
-    return selectedUnits.reduce((sum, unitId) => {
+    return selectedUnits.reduce((sum: number, unitId: string) => {
       const unit = availableUnits.find((u) => u.id === unitId);
       if (!unit) return sum;
       return sum + unit.dress.rentalPriceCents * days;
@@ -100,7 +100,7 @@ export default function CreateRentalForm({ customers }: CreateRentalFormProps) {
     const days = calculateRentalDays();
     if (days === 0) return 0;
 
-    return selectedUnits.reduce((sum, unitId) => {
+    return selectedUnits.reduce((sum: number, unitId: string) => {
       const unit = availableUnits.find((u) => u.id === unitId);
       if (!unit) return sum;
       const lineBaseCents = unit.dress.rentalPriceCents * days;

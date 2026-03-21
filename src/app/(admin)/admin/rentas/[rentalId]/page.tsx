@@ -5,6 +5,30 @@ import { Badge } from "@/components/badge";
 import LightboxImage from "@/components/lightbox-image";
 import { RentalDetailContent } from "./rental-detail-content";
 
+type RentalDetailItem = {
+  id: string;
+  priceCents: number;
+  dressUnit: {
+    inventoryCode: string;
+    status: string;
+    dress: {
+      id: string;
+      modelName: string;
+      brand: string | null;
+      color: string;
+      size: string;
+      imageUrl: string | null;
+    };
+  };
+};
+
+type RentalPayment = {
+  id: string;
+  method: string;
+  amountCents: number;
+  paidAt: Date | null;
+};
+
 const RENTAL_STATUS_COLORS: Record<string, string> = {
   RESERVED: "bg-[#f7edcc] text-[#9d7413]",
   RENTED: "bg-[#dde8ff] text-[#365db8]",
@@ -67,7 +91,10 @@ export default async function RentalDetailPage({
     })}`;
   };
 
-  const rentalBaseCents = rental.items.reduce((sum, item) => sum + item.priceCents, 0);
+  const rentalBaseCents = rental.items.reduce(
+    (sum: number, item: RentalDetailItem) => sum + item.priceCents,
+    0,
+  );
   const itbmsCents = Math.max(0, rental.subtotalCents - rentalBaseCents);
   const totalToCollectCents = rental.subtotalCents;
   const depositPaid = rental.notes?.includes("[[DEPOSIT_PAID:yes]]") ?? false;
@@ -131,7 +158,7 @@ export default async function RentalDetailPage({
       <div className="atelier-card p-6 space-y-4">
         <h2 className="text-lg font-semibold">Prendas Rentadas</h2>
         <div className="space-y-2">
-          {rental.items.map((item, index) => (
+          {rental.items.map((item: RentalDetailItem, index: number) => (
             <div key={item.id} className="flex items-center justify-between gap-3 p-3 border border-[#eadfce] rounded-lg">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="h-16 w-14 shrink-0 overflow-hidden rounded-md border border-[#eadfce] bg-[#f6f0e5]">
@@ -217,7 +244,7 @@ export default async function RentalDetailPage({
           <p className="text-gray-500 text-center py-4">No hay pagos registrados</p>
         ) : (
           <div className="space-y-2">
-            {rental.payments.map((payment) => (
+            {rental.payments.map((payment: RentalPayment) => (
               <div key={payment.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                 <div>
                   <p className="font-medium text-gray-900">{payment.method}</p>
