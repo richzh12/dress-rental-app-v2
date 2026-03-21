@@ -31,14 +31,20 @@ copy .env.example .env
 ```
 
 3. Configura `DATABASE_URL` con tu cadena de conexion PostgreSQL.
+4. Configura Cloudinary para imagenes:
 
-4. Genera el cliente de Prisma:
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `CLOUDINARY_UPLOAD_FOLDER` (opcional, por defecto `dress-rental-app/dresses`)
+
+5. Genera el cliente de Prisma:
 
 ```bash
 npx prisma generate
 ```
 
-5. Levanta la app:
+6. Levanta la app:
 
 ```bash
 npm run dev
@@ -61,6 +67,11 @@ npx prisma migrate dev --name init
 1. Crea un proyecto en Vercel e importa este repositorio.
 2. Agrega variables de entorno en Vercel:
 - `DATABASE_URL`
+- `NEXTAUTH_SECRET`
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `CLOUDINARY_UPLOAD_FOLDER` (opcional)
 3. Despliega.
 
 ## Estado de Dia 1

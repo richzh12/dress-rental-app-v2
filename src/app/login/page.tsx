@@ -11,15 +11,18 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-100 p-6 sm:p-10">
-      <section className="mx-auto flex w-full max-w-md flex-col rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Dress Rental Admin</p>
-        <h1 className="mt-2 text-2xl font-semibold text-zinc-900">Iniciar sesion</h1>
-        <p className="mt-1 text-sm text-zinc-600">Accede para administrar inventario, reservas y ventas.</p>
+    <main className="atelier-shell flex items-center justify-center p-6 sm:p-10">
+      <section className="atelier-card mx-auto flex w-full max-w-md flex-col p-7 sm:p-9">
+        <h1 className="atelier-title text-6xl leading-none">Elegance</h1>
+        <p className="atelier-heading-kicker mt-2">Event Supplies</p>
 
-        <div className="mt-6">
+        <div className="mt-8">
           <LoginForm />
         </div>
+
+        <p className="mt-6 text-center text-xs font-semibold tracking-[0.18em] text-[#b39a72]">
+          © 2026 Elegance Event Supplies
+        </p>
       </section>
     </main>
   );

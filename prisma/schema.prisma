@@ -101,6 +101,7 @@ model Dress {
   color            String
   size             String
   description      String?
+  imageUrl         String?
   rentalPriceCents Int
   salePriceCents   Int?
   isActive         Boolean     @default(true)

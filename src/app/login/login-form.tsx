@@ -37,10 +37,10 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-5">
       <div className="space-y-1">
-        <label htmlFor="email" className="block text-sm font-medium text-zinc-700">
-          Email
+        <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-[0.18em] text-[#a78f68]">
+          Usuario
         </label>
         <input
           id="email"
@@ -48,14 +48,14 @@ export default function LoginForm() {
           type="email"
           required
           autoComplete="email"
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none ring-0 focus:border-zinc-700"
-          placeholder="admin@dressrental.local"
+          className="w-full rounded-md px-4 py-3 text-sm"
+          placeholder="admin@elegance.local"
         />
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="password" className="block text-sm font-medium text-zinc-700">
-          Password
+        <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-[0.18em] text-[#a78f68]">
+          Contrasena
         </label>
         <input
           id="password"
@@ -63,7 +63,7 @@ export default function LoginForm() {
           type="password"
           required
           autoComplete="current-password"
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none ring-0 focus:border-zinc-700"
+          className="w-full rounded-md px-4 py-3 text-sm"
           placeholder="********"
         />
       </div>
@@ -72,11 +72,7 @@ export default function LoginForm() {
         <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-70"
-      >
+      <button type="submit" disabled={pending} className="atelier-btn-primary w-full px-4 py-3 text-sm uppercase tracking-[0.12em] disabled:cursor-not-allowed disabled:opacity-70">
         {pending ? "Entrando..." : "Iniciar sesion"}
       </button>
     </form>
