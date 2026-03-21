@@ -12,6 +12,17 @@ type CalendarPageProps = {
   searchParams: CalendarSearchParams;
 };
 
+type CalendarRental = {
+  id: string;
+  status: RentalStatus;
+  startDate: Date;
+  endDate: Date;
+  customer: {
+    firstName: string;
+    lastName: string;
+  };
+};
+
 const MONTH_NAMES = [
   "Enero",
   "Febrero",
@@ -94,7 +105,7 @@ export default async function CalendarioPage({ searchParams }: CalendarPageProps
   const monthStart = new Date(year, monthIndex, 1);
   const monthEnd = new Date(year, monthIndex + 1, 0, 23, 59, 59, 999);
 
-  const rentals = await prisma.rental.findMany({
+  const rentals: CalendarRental[] = await prisma.rental.findMany({
     where: {
       status: {
         not: "CANCELLED",
@@ -170,7 +181,7 @@ export default async function CalendarioPage({ searchParams }: CalendarPageProps
             const dayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
 
             const dayRentals = rentals.filter(
-              (rental) => rental.startDate <= dayEnd && rental.endDate >= dayStart
+              (rental: CalendarRental) => rental.startDate <= dayEnd && rental.endDate >= dayStart
             );
 
             return (
