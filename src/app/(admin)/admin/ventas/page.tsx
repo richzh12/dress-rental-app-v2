@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getDressImageUrl } from "@/lib/dress-image";
 import Link from "next/link";
-import { Prisma } from "@prisma/client";
 import NewSaleModal from "./new-sale-modal";
 import SalesFilters from "./sales-filters";
 
@@ -107,7 +106,7 @@ export default async function VentasPage({
   if (fromDate) saleDateFilter.gte = fromDate;
   if (toDate) saleDateFilter.lte = toDate;
 
-  const salesWhere: Prisma.SaleWhereInput = {
+  const salesWhere = {
     status: statusFilter || undefined,
     saleDate: Object.keys(saleDateFilter).length > 0 ? saleDateFilter : undefined,
     payments: methodFilter

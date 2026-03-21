@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Badge } from "@/components/badge";
@@ -64,7 +63,16 @@ function isRentalStatus(value: string): value is RentalStatus {
 }
 
 async function getRentals(searchParams: SearchParams) {
-  const where: Prisma.RentalWhereInput = {};
+  const where = {} as {
+    status?: RentalStatus;
+    OR?: Array<{
+      customer: {
+        firstName?: { contains: string; mode: "insensitive" };
+        lastName?: { contains: string; mode: "insensitive" };
+        email?: { contains: string; mode: "insensitive" };
+      };
+    }>;
+  };
 
   if (
     searchParams.status &&
