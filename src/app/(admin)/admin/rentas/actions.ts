@@ -6,6 +6,26 @@ import { redirect } from "next/navigation";
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
+type DressUnitWithDress = {
+  id: string;
+  dress: {
+    rentalPriceCents: number;
+  };
+};
+
+type AvailableDressUnit = {
+  id: string;
+  inventoryCode: string;
+  isActive: boolean;
+  dress: {
+    modelName: string;
+    brand: string | null;
+    color: string;
+    size: string;
+    rentalPriceCents: number;
+  };
+};
+
 function getInclusiveRentalDays(start: Date, end: Date) {
   const days = Math.ceil((end.getTime() - start.getTime()) / DAY_IN_MS) + 1;
   return Math.max(days, 1);
@@ -113,11 +133,11 @@ export async function createRentalAction(formData: FormData) {
     include: { dress: true },
   });
 
-  const rentalBaseCents = dressUnits.reduce((sum, unit) => {
+  const rentalBaseCents = dressUnits.reduce((sum: number, unit: DressUnitWithDress) => {
     return sum + unit.dress.rentalPriceCents * rentalDays;
   }, 0);
 
-  const itbmsCents = dressUnits.reduce((sum, unit) => {
+  const itbmsCents = dressUnits.reduce((sum: number, unit: DressUnitWithDress) => {
     const lineBaseCents = unit.dress.rentalPriceCents * rentalDays;
     return sum + Math.round(lineBaseCents * 0.07);
   }, 0);
@@ -139,7 +159,7 @@ export async function createRentalAction(formData: FormData) {
       balanceDueCents,
       notes: persistedNotes || undefined,
       items: {
-        create: dressUnits.map((unit) => ({
+        create: dressUnits.map((unit: DressUnitWithDress) => ({
           dressUnitId: unit.id,
           startsAt: start,
           endsAt: endExclusive,
@@ -183,7 +203,7 @@ export async function getAvailableUnits(startDate: string, endDate: string) {
   });
 
   const availableUnits = await Promise.all(
-    allUnits.map(async (unit) => {
+    allUnits.map(async (unit: AvailableDressUnit) => {
       const conflicts = await prisma.rentalItem.count({
         where: {
           dressUnitId: unit.id,
