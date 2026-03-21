@@ -8,27 +8,25 @@ import {
   cancelRentalAction,
   updateDepositPaidAction,
 } from './actions';
-import { Rental, RentalItem, Payment, Customer, PaymentMethod } from '@prisma/client';
 
 type RentalStatus = 'RESERVED' | 'RENTED' | 'RETURNED' | 'COMPLETED' | 'CANCELLED';
+type PaymentMethod = 'CASH' | 'CARD' | 'TRANSFER' | 'OTHER';
 
-interface DressUnitSummary {
+interface RentalCustomer {
+  firstName: string;
+  lastName: string;
+}
+
+interface RentalDetail {
   id: string;
   status: string;
-  inventoryCode: string;
-  dress: {
-    modelName: string;
-    color: string;
-    size: string;
-  };
+  notes: string | null;
+  balanceDueCents: number;
+  customer: RentalCustomer;
 }
 
 interface RentalDetailContentProps {
-  rental: Rental & {
-    customer: Customer;
-    items: (RentalItem & { dressUnit: DressUnitSummary })[];
-    payments: Payment[];
-  };
+  rental: RentalDetail;
 }
 
 export function RentalDetailContent({ rental }: RentalDetailContentProps) {
