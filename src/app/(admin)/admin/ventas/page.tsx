@@ -1,9 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { getDressImageUrl } from "@/lib/dress-image";
 import Link from "next/link";
-import { PaymentMethod, Prisma, SaleStatus } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import NewSaleModal from "./new-sale-modal";
 import SalesFilters from "./sales-filters";
+
+type PaymentMethod = "CASH" | "CARD" | "TRANSFER" | "OTHER";
+type SaleStatus = "PENDING" | "COMPLETED" | "CANCELLED" | "REFUNDED";
 
 type SalesSearchParams = Promise<{
   created?: string;

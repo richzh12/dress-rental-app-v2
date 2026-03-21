@@ -1,9 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { PaymentMethod } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+type PaymentMethod = "CASH" | "CARD" | "TRANSFER" | "OTHER";
 
 export async function createSaleAction(formData: FormData) {
   const dressUnitId = String(formData.get("dressUnitId") ?? "").trim();

@@ -1,8 +1,9 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { SaleStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+
+type SaleStatus = "PENDING" | "COMPLETED" | "CANCELLED" | "REFUNDED";
 
 const ALLOWED_STATUS_CHANGES: Record<SaleStatus, SaleStatus[]> = {
   PENDING: ["COMPLETED", "CANCELLED"],

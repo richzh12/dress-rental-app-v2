@@ -1,8 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { PaymentMethod, RentalStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+
+type PaymentMethod = "CASH" | "CARD" | "TRANSFER" | "OTHER";
+type RentalStatus = "RESERVED" | "RENTED" | "RETURNED" | "COMPLETED" | "CANCELLED";
 
 function withDepositTag(notes: string | null, depositPaid: boolean) {
   const cleanNotes = (notes ?? "")
