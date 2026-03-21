@@ -207,7 +207,6 @@ export default async function DressDetailPage({ params, searchParams }: DressDet
               name="image"
               type="file"
               accept="image/*"
-              capture="environment"
               className="block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700 file:mr-3 file:rounded-md file:border-0 file:bg-[#f4ecdf] file:px-3 file:py-2 file:text-xs file:font-semibold file:text-[#8f7f65] hover:file:bg-[#efe3d0]"
             />
             <p className="mt-1 text-xs text-[#8f7f65]">

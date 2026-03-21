@@ -88,7 +88,6 @@ export default function NewDressModal() {
                   name="image"
                   type="file"
                   accept="image/*"
-                  capture="environment"
                   className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-[#f2ebdd] file:px-3 file:py-1 file:text-sm file:font-semibold file:text-[#7a6847]"
                 />
                 <p className="text-xs text-[#8f7f65]">
