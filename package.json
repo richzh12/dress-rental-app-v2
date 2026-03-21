@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "seed": "prisma db seed"
+    "lint": "eslint"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
@@ -32,8 +31,5 @@
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   }
 }
