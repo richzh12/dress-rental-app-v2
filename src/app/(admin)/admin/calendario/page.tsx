@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { RentalStatus } from "@prisma/client";
+
+type RentalStatus = "RESERVED" | "RENTED" | "RETURNED" | "COMPLETED" | "CANCELLED";
 
 type CalendarSearchParams = Promise<{
   year?: string;

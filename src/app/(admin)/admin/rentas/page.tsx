@@ -1,8 +1,10 @@
-import { Prisma, RentalStatus } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Badge } from "@/components/badge";
 import RentalsFilters from "./rentals-filters";
+
+type RentalStatus = "RESERVED" | "RENTED" | "RETURNED" | "COMPLETED" | "CANCELLED";
 
 interface SearchParams {
   status?: string;
