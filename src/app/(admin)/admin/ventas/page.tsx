@@ -13,6 +13,41 @@ type SalesSearchParams = Promise<{
   to?: string;
 }>;
 
+type UnitForSaleWithImage = {
+  id: string;
+  dressId: string;
+  inventoryCode: string;
+  dress: {
+    modelName: string;
+    brand: string | null;
+    color: string;
+    size: string;
+    salePriceCents: number | null;
+    imageUrl: string | null;
+  };
+};
+
+type SaleListItem = {
+  id: string;
+  saleDate: Date;
+  status: SaleStatus;
+  totalCents: number;
+  dress: {
+    modelName: string;
+    brand: string | null;
+    color: string;
+    size: string;
+  };
+  dressUnit: {
+    inventoryCode: string;
+  } | null;
+  customer: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  payments: Array<{ id: string }>;
+};
+
 const VALID_SALE_STATUSES: SaleStatus[] = ["PENDING", "COMPLETED", "CANCELLED", "REFUNDED"];
 const VALID_PAYMENT_METHODS: PaymentMethod[] = ["CASH", "CARD", "TRANSFER", "OTHER"];
 
@@ -127,7 +162,7 @@ export default async function VentasPage({
     }),
   ]);
 
-  const availableUnitsForSaleWithImages = availableUnitsForSale.map((unit) => ({
+  const availableUnitsForSaleWithImages = availableUnitsForSale.map((unit: UnitForSaleWithImage) => ({
     ...unit,
     dress: {
       ...unit.dress,
@@ -170,7 +205,7 @@ export default async function VentasPage({
           <p className="text-sm text-[#8f7f65]">No hay ventas registradas.</p>
         ) : (
           <div className="space-y-2">
-            {sales.map((sale) => (
+            {sales.map((sale: SaleListItem) => (
               <article
                 key={sale.id}
                 className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#eadfce] p-3"

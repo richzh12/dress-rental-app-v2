@@ -13,6 +13,27 @@ interface SearchParams {
 }
 
 type RentalsSearchParams = Promise<SearchParams>;
+type RentalListItem = {
+  id: string;
+  status: RentalStatus;
+  startDate: Date;
+  endDate: Date;
+  subtotalCents: number;
+  customer: {
+    firstName: string;
+    lastName: string;
+    email: string | null;
+  };
+  items: Array<{
+    id: string;
+    dressUnit: {
+      inventoryCode: string;
+      dress: {
+        modelName: string;
+      };
+    };
+  }>;
+};
 
 const RENTAL_STATUS_COLORS: Record<string, string> = {
   RESERVED: "bg-[#f7edcc] text-[#9d7413]",

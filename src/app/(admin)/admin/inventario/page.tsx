@@ -15,6 +15,20 @@ type InventorySearchParams = Promise<{
 
 type UnitStatus = "AVAILABLE" | "RESERVED" | "RENTED" | "MAINTENANCE" | "LAUNDRY" | "RETIRED";
 
+type InventoryDressCard = {
+  id: string;
+  modelName: string;
+  size: string;
+  color: string;
+  rentalPriceCents: number;
+  salePriceCents: number | null;
+  imageUrl: string | null;
+  _count: {
+    units: number;
+  };
+  units: Array<{ status: UnitStatus }>;
+};
+
 function getCardStatus(units: Array<{ status: UnitStatus }>) {
   if (units.length === 0) {
     return { label: "SIN UNIDADES", className: "bg-[#efe7db] text-[#8b7c67]" };
@@ -135,7 +149,7 @@ export default async function InventarioPage({
         </section>
       ) : (
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {dresses.map((dress) => {
+          {dresses.map((dress: InventoryDressCard) => {
             const status = getCardStatus(dress.units as Array<{ status: UnitStatus }>);
             const dressImageUrl = getDressImageUrl(dress.imageUrl, dress.id);
 

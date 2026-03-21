@@ -32,7 +32,16 @@ const UNIT_STATUS_OPTIONS = [
   "RETIRED",
 ] as const;
 
-function unitStatusBadgeClass(status: (typeof UNIT_STATUS_OPTIONS)[number]) {
+type UnitStatusOption = (typeof UNIT_STATUS_OPTIONS)[number];
+
+type DressUnitRow = {
+  id: string;
+  inventoryCode: string;
+  status: UnitStatusOption;
+  conditionNotes: string | null;
+};
+
+function unitStatusBadgeClass(status: UnitStatusOption) {
   switch (status) {
     case "AVAILABLE":
       return "border-[#a9ddbe] bg-[#e7f7ee] text-[#2f8a5f]";
@@ -301,7 +310,7 @@ export default async function DressDetailPage({ params, searchParams }: DressDet
                 </td>
               </tr>
             ) : (
-              dress.units.map((unit) => {
+              dress.units.map((unit: DressUnitRow) => {
                 const onUpdateUnit = updateUnitStatusAction.bind(null, dressId, unit.id);
                 const onDeactivateUnit = deactivateUnitAction.bind(null, dressId, unit.id);
 
