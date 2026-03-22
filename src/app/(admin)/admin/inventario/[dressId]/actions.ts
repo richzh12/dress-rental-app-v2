@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { uploadDressImageToCloudinary } from "@/lib/cloudinary";
+import { deleteDressImageFromCloudinary, uploadDressImageToCloudinary } from "@/lib/cloudinary";
 
 const ALLOWED_UNIT_STATUSES = [
   "AVAILABLE",
@@ -82,16 +82,55 @@ export async function updateDressAction(dressId: string, formData: FormData) {
   redirect(`/admin/inventario/${dressId}?updated=1`);
 }
 
-export async function deactivateDressAction(dressId: string) {
+export async function deleteDressAction(dressId: string) {
   await ensureSession();
 
-  await prisma.dress.update({
+  const dress = await prisma.dress.findUnique({
     where: { id: dressId },
-    data: { isActive: false },
+    select: {
+      id: true,
+      imageUrl: true,
+      _count: {
+        select: {
+          sales: true,
+        },
+      },
+      units: {
+        select: {
+          _count: {
+            select: {
+              rentalItems: true,
+              sales: true,
+            },
+          },
+        },
+      },
+    },
   });
 
+  if (!dress) {
+    redirect("/admin/inventario?deleted=1");
+  }
+
+  const hasDressSales = dress._count.sales > 0;
+  const hasUnitSales = dress.units.some((unit) => unit._count.sales > 0);
+  const hasRentalHistory = dress.units.some((unit) => unit._count.rentalItems > 0);
+
+  if (hasDressSales || hasUnitSales || hasRentalHistory) {
+    redirect(`/admin/inventario/${dressId}?deleteError=history`);
+  }
+
+  if (dress.imageUrl) {
+    await deleteDressImageFromCloudinary(dressId);
+  }
+
+  await prisma.$transaction([
+    prisma.dressUnit.deleteMany({ where: { dressId } }),
+    prisma.dress.delete({ where: { id: dressId } }),
+  ]);
+
   revalidatePath("/admin/inventario");
-  redirect("/admin/inventario?deactivated=1");
+  redirect("/admin/inventario?deleted=1");
 }
 
 export async function createUnitAction(dressId: string, formData: FormData) {

@@ -1,7 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import { createDressAction } from "./actions";
+
+function SubmitControls({ onCancel }: { onCancel: () => void }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <div className="md:col-span-2 flex justify-end gap-2">
+      <button
+        type="button"
+        onClick={onCancel}
+        disabled={pending}
+        className="atelier-btn-soft px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        disabled={pending}
+        className="atelier-btn-primary px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {pending ? "Guardando..." : "Guardar vestido"}
+      </button>
+    </div>
+  );
+}
 
 export default function NewDressModal() {
   const [open, setOpen] = useState(false);
@@ -95,21 +120,7 @@ export default function NewDressModal() {
                 </p>
               </div>
 
-              <div className="md:col-span-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="atelier-btn-soft px-4 py-2 text-sm"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="atelier-btn-primary px-4 py-2 text-sm"
-                >
-                  Guardar vestido
-                </button>
-              </div>
+              <SubmitControls onCancel={() => setOpen(false)} />
             </form>
           </div>
         </div>

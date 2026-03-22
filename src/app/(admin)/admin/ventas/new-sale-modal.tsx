@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createSaleAction } from "./actions";
 import LightboxImage from "@/components/lightbox-image";
+import FormSubmitButton from "@/components/form-submit-button";
 
 interface CustomerOption {
   id: string;
@@ -225,13 +226,12 @@ export default function NewSaleModal({ customers, availableUnitsForSale }: NewSa
                   >
                     Cancelar
                   </button>
-                  <button
-                    type="submit"
+                  <FormSubmitButton
+                    label="Registrar venta"
+                    pendingLabel="Registrando..."
                     disabled={!selectedUnitId}
-                    className="atelier-btn-primary px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    Registrar venta
-                  </button>
+                    className="atelier-btn-primary px-4 py-2 text-sm font-medium"
+                  />
                 </div>
               </form>
             )}

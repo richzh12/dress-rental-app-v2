@@ -51,3 +51,21 @@ export async function uploadDressImageToCloudinary(dressId: string, imageFile: F
     throw new Error(httpCode ? `Cloudinary (${httpCode}): ${message}` : `Cloudinary: ${message}`);
   }
 }
+
+export async function deleteDressImageFromCloudinary(dressId: string) {
+  const folder = ensureCloudinaryConfig();
+
+  try {
+    const result = await cloudinary.uploader.destroy(`${folder}/${dressId}`, {
+      invalidate: true,
+      resource_type: "image",
+    });
+
+    return result.result === "ok" || result.result === "not found";
+  } catch (error) {
+    const maybeCloudinary = error as { error?: { message?: string; http_code?: number } };
+    const message = maybeCloudinary.error?.message ?? "No se pudo eliminar la imagen en Cloudinary.";
+    const httpCode = maybeCloudinary.error?.http_code;
+    throw new Error(httpCode ? `Cloudinary (${httpCode}): ${message}` : `Cloudinary: ${message}`);
+  }
+}

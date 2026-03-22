@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Badge } from "@/components/badge";
+import FormSubmitButton from "@/components/form-submit-button";
 import { updateSaleStatusAction } from "./actions";
 
 type SalePayment = {
@@ -113,9 +114,11 @@ export default async function SaleDetailPage({
             <form action={updateSaleStatusAction}>
               <input type="hidden" name="saleId" value={sale.id} />
               <input type="hidden" name="nextStatus" value="COMPLETED" />
-              <button type="submit" className="atelier-btn-primary px-4 py-2 font-medium">
-                Marcar como completada
-              </button>
+              <FormSubmitButton
+                label="Marcar como completada"
+                pendingLabel="Procesando..."
+                className="atelier-btn-primary px-4 py-2 font-medium"
+              />
             </form>
           ) : null}
 
@@ -123,9 +126,11 @@ export default async function SaleDetailPage({
             <form action={updateSaleStatusAction}>
               <input type="hidden" name="saleId" value={sale.id} />
               <input type="hidden" name="nextStatus" value="CANCELLED" />
-              <button type="submit" className="rounded-lg border border-red-300 px-4 py-2 font-medium text-red-600 hover:bg-red-50">
-                Cancelar venta
-              </button>
+              <FormSubmitButton
+                label="Cancelar venta"
+                pendingLabel="Procesando..."
+                className="rounded-lg border border-red-300 px-4 py-2 font-medium text-red-600 hover:bg-red-50"
+              />
             </form>
           ) : null}
 
@@ -133,9 +138,11 @@ export default async function SaleDetailPage({
             <form action={updateSaleStatusAction}>
               <input type="hidden" name="saleId" value={sale.id} />
               <input type="hidden" name="nextStatus" value="REFUNDED" />
-              <button type="submit" className="rounded-lg border border-[#9bb6ea] bg-[#e8efff] px-4 py-2 font-medium text-[#365db8] hover:bg-[#d9e5ff]">
-                Marcar como reembolsada
-              </button>
+              <FormSubmitButton
+                label="Marcar como reembolsada"
+                pendingLabel="Procesando..."
+                className="rounded-lg border border-[#9bb6ea] bg-[#e8efff] px-4 py-2 font-medium text-[#365db8] hover:bg-[#d9e5ff]"
+              />
             </form>
           ) : null}
         </div>

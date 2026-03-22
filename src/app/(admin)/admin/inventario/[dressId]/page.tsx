@@ -3,13 +3,14 @@ import { notFound } from "next/navigation";
 import {
   createUnitAction,
   deactivateUnitAction,
-  deactivateDressAction,
+  deleteDressAction,
   updateDressAction,
   updateUnitStatusAction,
 } from "./actions";
 import { prisma } from "@/lib/prisma";
 import { getDressImageUrl } from "@/lib/dress-image";
 import LightboxImage from "@/components/lightbox-image";
+import FormSubmitButton from "@/components/form-submit-button";
 
 type DressDetailPageProps = {
   params: Promise<{ dressId: string }>;
@@ -18,6 +19,7 @@ type DressDetailPageProps = {
     unitCreated?: string;
     unitUpdated?: string;
     unitDeactivated?: string;
+    deleteError?: string;
     unitCode?: string;
     showInactive?: string;
   }>;
@@ -96,7 +98,7 @@ export default async function DressDetailPage({ params, searchParams }: DressDet
   }
 
   const onUpdateDress = updateDressAction.bind(null, dressId);
-  const onDeactivateDress = deactivateDressAction.bind(null, dressId);
+  const onDeleteDress = deleteDressAction.bind(null, dressId);
   const onCreateUnit = createUnitAction.bind(null, dressId);
   const dressImageUrl = getDressImageUrl(dress.imageUrl, dress.id);
 
@@ -134,6 +136,11 @@ export default async function DressDetailPage({ params, searchParams }: DressDet
       {query.unitDeactivated === "1" ? (
         <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
           Unidad desactivada correctamente.
+        </p>
+      ) : null}
+      {query.deleteError === "history" ? (
+        <p className="mt-4 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+          No se puede eliminar el vestido porque tiene historial de ventas o alquileres.
         </p>
       ) : null}
 
@@ -214,22 +221,20 @@ export default async function DressDetailPage({ params, searchParams }: DressDet
             </p>
           </div>
           <div className="md:col-span-2 flex gap-2">
-            <button
-              type="submit"
+            <FormSubmitButton
+              label="Guardar cambios"
+              pendingLabel="Guardando..."
               className="atelier-btn-primary px-3 py-2 text-sm"
-            >
-              Guardar cambios
-            </button>
+            />
           </div>
         </form>
 
-        <form action={onDeactivateDress} className="mt-3">
-          <button
-            type="submit"
+        <form action={onDeleteDress} className="mt-3">
+          <FormSubmitButton
+            label="Eliminar vestido"
+            pendingLabel="Eliminando..."
             className="rounded-md border border-[#efb9b9] px-3 py-2 text-sm font-medium text-[#b85353] hover:bg-[#fcecec]"
-          >
-            Desactivar vestido
-          </button>
+          />
         </form>
       </section>
 
@@ -254,12 +259,11 @@ export default async function DressDetailPage({ params, searchParams }: DressDet
             placeholder="Notas (opcional)"
             className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
           />
-          <button
-            type="submit"
+          <FormSubmitButton
+            label="Crear unidad"
+            pendingLabel="Creando..."
             className="atelier-btn-primary md:col-span-3 px-3 py-2 text-sm"
-          >
-            Crear unidad
-          </button>
+          />
         </form>
       </section>
 
@@ -340,23 +344,21 @@ export default async function DressDetailPage({ params, searchParams }: DressDet
                           placeholder="Notas"
                           className="min-w-44 rounded-md border border-zinc-300 px-2 py-1 text-xs"
                         />
-                        <button
-                          type="submit"
+                        <FormSubmitButton
+                          label="Guardar"
+                          pendingLabel="Guardando..."
                           className="atelier-btn-soft px-2 py-1 text-xs"
-                        >
-                          Guardar
-                        </button>
+                        />
                       </form>
                     </td>
                     <td className="px-3 py-2 text-zinc-700">{unit.conditionNotes ?? "-"}</td>
                     <td className="px-3 py-2 text-zinc-700">
                       <form action={onDeactivateUnit}>
-                        <button
-                          type="submit"
+                        <FormSubmitButton
+                          label="Desactivar"
+                          pendingLabel="Procesando..."
                           className="rounded-md border border-[#efb9b9] px-2 py-1 text-xs font-medium text-[#b85353] hover:bg-[#fcecec]"
-                        >
-                          Desactivar
-                        </button>
+                        />
                       </form>
                     </td>
                   </tr>

@@ -33,6 +33,7 @@ export default function InventoryFilters({
 
       // Clear one-time banners while filtering.
       params.delete("created");
+      params.delete("deleted");
       params.delete("deactivated");
 
       if (model.trim()) {

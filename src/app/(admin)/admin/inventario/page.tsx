@@ -10,7 +10,7 @@ type InventorySearchParams = Promise<{
   size?: string;
   color?: string;
   created?: string;
-  deactivated?: string;
+  deleted?: string;
 }>;
 
 type UnitStatus = "AVAILABLE" | "RESERVED" | "RENTED" | "MAINTENANCE" | "LAUNDRY" | "RETIRED";
@@ -132,9 +132,9 @@ export default async function InventarioPage({
           Vestido creado correctamente.
         </p>
       ) : null}
-      {params.deactivated === "1" ? (
+      {params.deleted === "1" ? (
         <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
-          Vestido desactivado correctamente.
+          Vestido eliminado correctamente.
         </p>
       ) : null}
 
